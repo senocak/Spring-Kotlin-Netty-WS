@@ -1,0 +1,16 @@
+spring:
+    application:
+        name: Spring-Kotlin-WS-Screenshot
+websocket:
+    netty:
+        socket-path: /ws
+        max-content-length: 65536
+        port: 8090
+        boss-thread: 1
+        worker-thread: 4
+
+
+logging:
+    level:
+        org.springframework.web: DEBUG
+        com.github.senocak: DEBUG
