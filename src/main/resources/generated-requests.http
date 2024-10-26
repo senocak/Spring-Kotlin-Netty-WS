@@ -1,0 +1,46 @@
+### Request-1
+WEBSOCKET ws://localhost:8090/ws
+Content-Type: application/json
+
+===
+{
+  "mapper": "register",
+  "body": {
+    "username": "username1",
+    "agent": "agent"
+  }
+}
+=== wait-for-server
+
+
+
+### Request-2
+WEBSOCKET ws://localhost:8090/ws
+Content-Type: application/json
+
+===
+{
+  "mapper": "register",
+  "body": {
+    "username": "username2",
+    "agent": "agent"
+  }
+}
+=== wait-for-server
+
+
+
+### Request-3
+WEBSOCKET ws://localhost:8090/ws
+Content-Type: application/json
+
+===
+{
+  "mapper": "dispatch",
+  "body": {
+    "destination": "username1",
+    "message": "message",
+    "data": "data"
+  }
+}
+=== wait-for-server

@@ -1,14 +1,11 @@
-package com.github.senocak.netty
+package com.github.senocak
 
-import org.springframework.stereotype.Component
 import kotlin.reflect.KClass
 
-@Component
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class WSController
 
-@Component
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class WSControllerAdvice

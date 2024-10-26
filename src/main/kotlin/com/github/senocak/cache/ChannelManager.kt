@@ -1,8 +1,7 @@
-package com.github.senocak.netty.cache
+package com.github.senocak.cache
 
 import io.netty.channel.Channel
 import io.netty.util.AttributeKey
-import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
@@ -17,14 +16,17 @@ class ChannelManager {
         return channel
     }
 
+    fun toList(): List<String> = channels.map { it.key }.toList()
+
     fun get(id: String): Channel? = channels[id]
+
     fun remove(id: String): Channel? = channels.remove(key = id)
 
     fun remove(channel: Channel): Channel? {
-        val id = getChannelIdAttributeKey(channel = channel)
+        val id: String? = getChannelIdAttributeKey(channel = channel)
         return when {
-            StringUtils.isNotEmpty(id) -> channels.remove(id)
-            else -> null
+            id.isNullOrEmpty() -> null
+            else -> channels.remove(id)
         }
     }
 
@@ -34,6 +36,6 @@ class ChannelManager {
         else
             AttributeKey.valueOf(CHANNEL_ID_ATTRIBUTE_KEY)
 
-    private fun getChannelIdAttributeKey(channel: Channel): String =
+    fun getChannelIdAttributeKey(channel: Channel): String? =
         channel.attr(channelAttributeKey()).get()
 }

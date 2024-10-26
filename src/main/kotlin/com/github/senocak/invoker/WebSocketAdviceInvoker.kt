@@ -1,7 +1,7 @@
-package com.github.senocak.netty.invoker
+package com.github.senocak.invoker
 
-import com.github.senocak.netty.WSControllerAdvice
-import com.github.senocak.netty.WSExceptionHandler
+import com.github.senocak.WSControllerAdvice
+import com.github.senocak.WSExceptionHandler
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 import java.lang.reflect.InvocationTargetException
@@ -32,12 +32,14 @@ class WebSocketAdviceInvoker(context: ApplicationContext) {
         return when {
             throwable == null -> null
             else -> {
-                bean::class.java.declaredMethods.forEach { method ->
-                    method.getAnnotation(WSExceptionHandler::class.java).throwables.forEach { cls ->
-                        if (throwable::class.java.name == cls.java.name) {
-                            return method
+                bean.javaClass.declaredMethods.forEach { method ->
+                    val isAnnotationPresent: Boolean = method.isAnnotationPresent(WSExceptionHandler::class.java)
+                    if (isAnnotationPresent)
+                        method.getAnnotation(WSExceptionHandler::class.java).throwables.forEach { cls ->
+                            if (throwable::class.java.name == cls.java.name) {
+                                return method
+                            }
                         }
-                    }
                 }
                 null
             }

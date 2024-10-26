@@ -1,12 +1,11 @@
-package com.github.senocak.netty
+package com.github.senocak
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.senocak.netty.invoker.WebSocketAdviceInvoker
-import com.github.senocak.netty.invoker.WebSocketControllerInvoker
-import com.github.senocak.logger
-import com.github.senocak.netty.cache.ChannelGroupManager
-import com.github.senocak.netty.cache.ChannelManager
+import com.github.senocak.cache.ChannelGroupManager
+import com.github.senocak.cache.ChannelManager
+import com.github.senocak.invoker.WebSocketAdviceInvoker
+import com.github.senocak.invoker.WebSocketControllerInvoker
 import io.netty.channel.Channel
 import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
@@ -27,6 +26,12 @@ class WebSocketInboundHandler(
     private val objectMapper: ObjectMapper
 ): SimpleChannelInboundHandler<TextWebSocketFrame>() {
     private val log: Logger by logger()
+
+    @Throws(java.lang.Exception::class)
+    override fun channelActive(ctx: ChannelHandlerContext) {
+        log.info("channelActive")
+        ctx.fireChannelActive()
+    }
 
     override fun channelInactive(ctx: ChannelHandlerContext) {
         channelManager.remove(channel = ctx.channel())
@@ -56,7 +61,8 @@ class WebSocketInboundHandler(
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
         sendResponse(channel = ctx.channel(),
-            response = ResponseEntity(status = ResponseEntity.ResponseStatus.ERROR, message = "server error."))
+            response = ResponseEntity(status = ResponseEntity.ResponseStatus.ERROR, message = "server error.")
+        )
     }
 
     private fun sendResponse(channel: Channel, response: ResponseEntity?) {

@@ -1,17 +1,15 @@
-package com.github.senocak.netty.invoker
+package com.github.senocak.invoker
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.senocak.netty.WSController
-import com.github.senocak.netty.WSMapping
-import com.github.senocak.netty.RequestEntity
-import com.github.senocak.netty.ResponseEntity
-import com.github.senocak.netty.WebSocketProcessingException
+import com.github.senocak.WSController
+import com.github.senocak.WSMapping
+import com.github.senocak.RequestEntity
+import com.github.senocak.ResponseEntity
+import com.github.senocak.WebSocketProcessingException
 import io.netty.channel.ChannelHandlerContext
-import org.apache.commons.lang3.StringUtils
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 import java.lang.reflect.Method
-import java.util.Arrays
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -33,7 +31,7 @@ class WebSocketControllerInvoker(
                     val parameters = controller.parameters
                     if (parameters != null) {
                         val parameter = parameters[0]
-                        if (!StringUtils.contains(parameter.type.name, "ChannelHandlerContext")) {
+                        if (!parameter.type.name.contains(other = "ChannelHandlerContext")) {
                             val arg: Any = objectMapper.convertValue(req.body,
                                 objectMapper.constructType(parameter.type))
                                 ?: throw NullPointerException("parameter can not be a null.")
@@ -53,9 +51,15 @@ class WebSocketControllerInvoker(
         return future
     }
 
-    private fun getController(bean: Any, name: String): Method? {
-        return Arrays.stream(bean.javaClass.declaredMethods)
-            .filter { StringUtils.equalsIgnoreCase(name, it.getAnnotation(WSMapping::class.java).value) }
-            .findFirst().orElse(null)
-    }
+    private fun getController(bean: Any, name: String): Method? =
+        bean.javaClass.declaredMethods.filter { declaredMethod ->
+            val isAnnotationPresent: Boolean = declaredMethod.isAnnotationPresent(WSMapping::class.java)
+            when {
+                !isAnnotationPresent -> false
+                else -> {
+                    val annotation = declaredMethod.getAnnotation(WSMapping::class.java)
+                    annotation.value == name
+                }
+            }
+        }.firstOrNull()
 }

@@ -13,4 +13,4 @@ websocket:
 logging:
     level:
         org.springframework.web: DEBUG
-        com.github.senocak: DEBUG
+        io.netty: DEBUG

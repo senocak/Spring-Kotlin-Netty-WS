@@ -1,4 +1,4 @@
-package com.github.senocak.netty
+package com.github.senocak
 
 import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer

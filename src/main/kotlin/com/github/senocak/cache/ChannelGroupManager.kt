@@ -1,7 +1,7 @@
-package com.github.senocak.netty.cache
+package com.github.senocak.cache
 
 import com.github.senocak.logger
-import com.github.senocak.netty.AlreadyChannelGroupException
+import com.github.senocak.AlreadyChannelGroupException
 import io.netty.channel.Channel
 import io.netty.channel.group.ChannelGroup
 import io.netty.channel.group.DefaultChannelGroup
